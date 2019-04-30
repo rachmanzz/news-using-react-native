@@ -16,3 +16,5 @@ lodash is helpfull module that have many functional like debounce. in this proje
 ![alt text](https://raw.githubusercontent.com/rachmanzz/news-using-react-native/master/assets/preview.png)
 
 
+## expo resource 
+https://expo.io/@rachmanzz/newsfeed
