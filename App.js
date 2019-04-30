@@ -11,15 +11,21 @@ export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = { text: '', refresh: true, news: [], isVisible: false, isEmpty: true }
+    this.setVisible = (isVisible) => { this.setState({isVisible: isVisible}) }
+    this.setEmpty = (isEmpty) => { this.setState({isEmpty: isEmpty}) }
     this.getNews = async news => {
       try {
+        this.setVisible(true)
+        this.setEmpty(false)
         const response = await axios.get('/everything', { params: { q: news, language: 'en' } })
         if(response && response.status === 200) {
           const data = response.data
           this.setNews(data.articles)
+          if (data.articles.length === 0) this.setEmpty(true)
+          this.setVisible(false)
         }
-        console.log('something error')
       } catch (error) {
+        this.setVisible(false)
       }
     }
     this.newsForm = news => {
@@ -41,15 +47,25 @@ export default class App extends React.Component {
         <View style={{padding: 5, backgroundColor: '#34495E'}}>
           <TextInput value={this.state.text} style={{height: 40, borderColor: '#eee', backgroundColor: '#fff', borderWidth: 1, paddingLeft: 5, paddingTop: 4, paddingRight: 5, paddingBottom: 4}} onChangeText={this.newsForm} placeholder="search a news here" />
         </View>
-        <View style={{ padding: 5 }} isVisible={!this.state.isVisible}>
+        { !this.state.isVisible && !this.state.isEmpty &&
+        (<View style={{ padding: 5, margin: 4 }} isVisible={!this.state.isVisible}>
           <FlatList data={this.state.news} keyExtractor={(item, index) => index.toString()} extraData={this.state.refresh} renderItem={({item})=> <View style={{flex: 1, borderColor: '#eee', borderWidth: 1, margin: 5, padding: 5}}>
             <Text> {item.title} </Text>
             <Image style={{ width: null, height: 100 }} source={{ uri: item.urlToImage }}/>
           </View> }  />
-        </View>
-        <View isVisible={this.state.isVisible || this.state.isEmpty}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
+        </View>)
+        }
+        { this.state.isVisible &&
+          (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>)
+        }
+        { this.state.isEmpty &&
+          (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{textAlign: 'center', color: '#eee', fontSize: 20, fontWeight: 'bold'}}>--- empty ---</Text>
+          </View>)
+
+        }
       </View>
     );
   }
