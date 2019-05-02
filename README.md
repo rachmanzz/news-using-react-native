@@ -18,3 +18,5 @@ lodash is helpfull module that have many functional like debounce. in this proje
 
 ## expo resource 
 https://expo.io/@rachmanzz/NewsFeed2
+
+move to https://github.com/rachmanzz/news-feeds-react-native, this reposite get some conflict with the resource when try in production.
